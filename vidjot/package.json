@@ -1,5 +1,5 @@
 {
-  "name": "vidjot",
+  "name": "todojot",
   "version": "1.0.0",
   "description": "First web app",
   "main": "app.js",
@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/MPesin/udemy-nodejs_express_mongodb#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "express-handlebars": "^3.0.0"
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^5.3.4"
   }
 }
