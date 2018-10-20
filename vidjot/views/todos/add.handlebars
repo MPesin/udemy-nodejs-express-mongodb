@@ -1,5 +1,5 @@
 {{#each errors}}
-    <div class="alert alert-danger">{{ text }}</div>
+<div class="alert alert-danger">{{ text }}</div>
 {{else}}
 
 {{/each}}
@@ -12,8 +12,8 @@
             <input type="text" class="form-control" name="title" value="{{title}}">
         </div>
         <div class="form-group">
-            <label for="title">Task</label>
-            <textarea type="text" class="form-control" name="task">{{task}}</textarea>        
+            <label for="task">Task</label>
+            <textarea type="text" class="form-control" name="task">{{task}}</textarea>
         </div>
         <button type="submit" class="btn btn-success">Just Do IT</button>
     </form>

@@ -13,9 +13,6 @@ const TodoSchema = new Schema({
     created:{
         type: Date,
         default: Date.now
-    },
-    deadline:{
-        type: Date
     }
 });
 
