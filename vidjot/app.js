@@ -77,7 +77,7 @@ app.get('/todos/edit/:id', (req, res) => {
     })
         .then(todo => {
             res.render('todos/edit', {
-                todo:todo
+                todo: todo
             });
         });
 });
@@ -112,8 +112,30 @@ app.post('/todos', (req, res) => {
     };
 });
 
-app.put('todos/:id', (req, res) => {
-    res.send('PUT');
+// Edit Todo Form
+app.put('/todos/:id', (req, res) => {
+    Todo.findOne({
+        _id: req.params.id
+    })
+        .then(todo => {
+            todo.title = req.body.title;
+            todo.task = req.body.task;
+
+            todo.save()
+                .then(todo => {
+                    res.redirect('/todos');
+                })
+        })
+});
+
+// Delete Todo Form
+app.delete('/todos/:id', (req, res) => {
+    Todo.remove({
+        _id: req.params.id
+    })
+    .then( () => {
+        res.redirect('/todos');
+    });
 });
 
 const port = 5000;

@@ -1,10 +1,14 @@
 {{#each todos}}
-    <div class="card card-body mb-2">
-        <h4>{{title}}</h4>  
-        <p>{{task}}</p>
-        <p><i>{{created}}</i></p>
-        <a class="btn btn-danger" href="/todos/edit/{{id}}">Edit</a>
-    </div>
+<div class="card card-body mb-2">
+    <h4>{{title}}</h4>
+    <p>{{task}}</p>
+    <p><i>{{created}}</i></p>
+    <a class="btn btn-info btn-block mb-2" href="/todos/edit/{{id}}">Edit</a>
+    <form method="POST" action="/todos/{{id}}?_method=DELETE">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="submit" class="btn btn-danger btn-block" value="Delete">
+    </form>
+</div>
 {{else}}
-    <h1>No TODO's</h1>
+<h1>No TODO's</h1>
 {{/each}}
