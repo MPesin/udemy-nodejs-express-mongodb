@@ -3,6 +3,8 @@ const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
+const session = require('express-session');
 
 const app = express();
 
@@ -39,6 +41,23 @@ app.use(bodyParser.json());
 
 // Methode override middleware: override with POST having ?_method=DELETE
 app.use(methodOverride('_method'));
+
+// Express Session middleware
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}))
+
+// Connect Flash middleware
+app.use(flash());
+
+// Global Variables
+app.use(function (req, res, next) {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+});
 
 // Index Route
 app.get('/', (req, res) => {
@@ -133,9 +152,9 @@ app.delete('/todos/:id', (req, res) => {
     Todo.remove({
         _id: req.params.id
     })
-    .then( () => {
-        res.redirect('/todos');
-    });
+        .then(() => {
+            res.redirect('/todos');
+        });
 });
 
 const port = 5000;
