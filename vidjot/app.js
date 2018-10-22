@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -7,6 +8,10 @@ const flash = require('connect-flash');
 const session = require('express-session');
 
 const app = express();
+
+// Load Routes
+const todos = require('./routes/todos');
+const users = require('./routes/users');
 
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/todo-dev', {
@@ -18,9 +23,6 @@ mongoose.connect('mongodb://localhost/todo-dev', {
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
 
-// Load Todo Model
-require('./models/Todo');
-const Todo = mongoose.model('todo');
 
 // Handlebars Middleware
 app.engine('handlebars', exphbs({
@@ -38,6 +40,9 @@ app.use(function (req, res, next) {
 // Body parse middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Static Folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Methode override middleware: override with POST having ?_method=DELETE
 app.use(methodOverride('_method'));
@@ -57,6 +62,7 @@ app.use(function (req, res, next) {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    next();
 });
 
 // Index Route
@@ -73,89 +79,9 @@ app.get('/about', (req, res) => {
     res.render('about');
 });
 
-// Todo's Index Page
-app.get('/todos', (req, res) => {
-    Todo.find({})
-        .sort({ created: 'descending' })
-        .then(todos => {
-            res.render('todos/index', {
-                todos: todos
-            });
-        });
-});
-
-// Add Todo Form
-app.get('/todos/add', (req, res) => {
-    res.render('todos/add');
-});
-
-// Edit Todo form
-app.get('/todos/edit/:id', (req, res) => {
-    Todo.findOne({
-        _id: req.params.id
-    })
-        .then(todo => {
-            res.render('todos/edit', {
-                todo: todo
-            });
-        });
-});
-
-//Process Form
-app.post('/todos', (req, res) => {
-    let errors = [];
-    if (!req.body.title) {
-        errors.push({ text: 'Please add a title' });
-    };
-
-    if (!req.body.task) {
-        errors.push({ text: 'Please write the task' });
-    };
-
-    if (errors.length > 0) {
-        res.render('todos/add', {
-            errors: errors,
-            title: req.body.title,
-            task: req.body.task,
-        });
-    } else {
-        const newUser = {
-            title: req.body.title,
-            task: req.body.task,
-        };
-        new Todo(newUser)
-            .save()
-            .then(todo => {
-                res.redirect('/todos');
-            });
-    };
-});
-
-// Edit Todo Form
-app.put('/todos/:id', (req, res) => {
-    Todo.findOne({
-        _id: req.params.id
-    })
-        .then(todo => {
-            todo.title = req.body.title;
-            todo.task = req.body.task;
-
-            todo.save()
-                .then(todo => {
-                    res.redirect('/todos');
-                })
-        })
-});
-
-// Delete Todo Form
-app.delete('/todos/:id', (req, res) => {
-    Todo.remove({
-        _id: req.params.id
-    })
-        .then(() => {
-            res.redirect('/todos');
-        });
-});
+// Use Routes
+app.use('/todos', todos);
+app.use('/users', users);
 
 const port = 5000;
 
