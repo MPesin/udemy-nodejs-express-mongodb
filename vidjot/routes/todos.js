@@ -41,11 +41,11 @@ router.post('/', (req, res) => {
     let errors = [];
     if (!req.body.title) {
         errors.push({ text: 'Please add a title' });
-    };
+    }
 
     if (!req.body.task) {
         errors.push({ text: 'Please write the task' });
-    };
+    }
 
     if (errors.length > 0) {
         res.render('todos/add', {
@@ -57,14 +57,14 @@ router.post('/', (req, res) => {
         const newUser = {
             title: req.body.title,
             task: req.body.task,
-        };
+        }
         new Todo(newUser)
             .save()
             .then(todo => {
                 req.flash('success_msg', `ToDo ${todo.title} Added`);
                 res.redirect('/todos');
             });
-    };
+    }
 });
 
 // Edit Todo Form

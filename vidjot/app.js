@@ -6,12 +6,16 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
 
 const app = express();
 
 // Load Routes
 const todos = require('./routes/todos');
 const users = require('./routes/users');
+
+// Passport Config
+require('./config/passport')(passport);
 
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/todo-dev', {
@@ -23,7 +27,6 @@ mongoose.connect('mongodb://localhost/todo-dev', {
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
 
-
 // Handlebars Middleware
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
@@ -32,7 +35,6 @@ app.set('view engine', 'handlebars');
 
 // Middleware
 app.use(function (req, res, next) {
-    console.log(Date.now());
     req.name = 'Michael Pesin';
     next();
 });
@@ -56,6 +58,10 @@ app.use(session({
 
 // Connect Flash middleware
 app.use(flash());
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Global Variables
 app.use(function (req, res, next) {
