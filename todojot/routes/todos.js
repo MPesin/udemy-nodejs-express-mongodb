@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+const {ensureAuthenticated} = require('../helpers/auth');
 
 module.exports = router;
 
@@ -20,12 +21,12 @@ router.get('/', (req, res) => {
 });
 
 // Add Todo Form
-router.get('/add', (req, res) => {
+router.get('/add', ensureAuthenticated, (req, res) => {
     res.render('todos/add');
 });
 
 // Edit Todo form
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     Todo.findOne({
         _id: req.params.id
     })
@@ -37,7 +38,7 @@ router.get('/edit/:id', (req, res) => {
 });
 
 //Process Form
-router.post('/', (req, res) => {
+router.post('/', ensureAuthenticated, (req, res) => {
     let errors = [];
     if (!req.body.title) {
         errors.push({ text: 'Please add a title' });
@@ -68,7 +69,7 @@ router.post('/', (req, res) => {
 });
 
 // Edit Todo Form
-router.put('/:id', (req, res) => {
+router.put('/:id', ensureAuthenticated, (req, res) => {
     Todo.findOne({
         _id: req.params.id
     })
@@ -85,7 +86,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete Todo Form
-router.delete('/:id', (req, res) => {
+router.delete('/:id', ensureAuthenticated, (req, res) => {
     Todo.remove({
         _id: req.params.id
     })
