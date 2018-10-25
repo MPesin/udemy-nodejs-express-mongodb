@@ -1,0 +1,15 @@
+<div class="card card-body">
+    <h3>Edit ToDo</h3>
+    <form action="/todos/{{todo.id}}?_method=PUT" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" name="title" value="{{todo.title}}">
+        </div>
+        <div class="form-group">
+            <label for="task">Task</label>
+            <textarea type="text" class="form-control" name="task">{{todo.task}}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Just Do IT, again</button>
+    </form>
+</div>
