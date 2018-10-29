@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-const {ensureAuthenticated} = require('../helpers/auth');
+const { ensureAuthenticated } = require('../helpers/auth');
 
 module.exports = router;
 
@@ -10,8 +10,8 @@ require('../models/Todo');
 const Todo = mongoose.model('todos');
 
 // Todo's Index Page
-router.get('/', (req, res) => {
-    Todo.find({})
+router.get('/', ensureAuthenticated, (req, res) => {
+    Todo.find({ user: req.user.id })
         .sort({ created: 'descending' })
         .then(todos => {
             res.render('todos/index', {
@@ -31,9 +31,14 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
         _id: req.params.id
     })
         .then(todo => {
-            res.render('todos/edit', {
-                todo: todo
-            });
+            if (todo.user != req.user.id) {
+                req.flash('error_msg', 'Not Your task!');
+                res.redirect('/todos');
+            } else {
+                res.render('todos/edit', {
+                    todo: todo
+                });
+            }
         });
 });
 
@@ -58,6 +63,7 @@ router.post('/', ensureAuthenticated, (req, res) => {
         const newUser = {
             title: req.body.title,
             task: req.body.task,
+            user: req.user.id
         }
         new Todo(newUser)
             .save()

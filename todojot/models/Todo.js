@@ -10,6 +10,10 @@ const TodoSchema = new Schema({
     task:{
         type: String
     },
+    user:{
+        type: String,
+        required: true
+    },
     created:{
         type: Date,
         default: Date.now
