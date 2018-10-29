@@ -63,7 +63,8 @@ router.post('/', ensureAuthenticated, (req, res) => {
         const newUser = {
             title: req.body.title,
             task: req.body.task,
-            user: req.user.id
+            user: req.user.id,
+            deadline: req.user.deadline
         }
         new Todo(newUser)
             .save()
